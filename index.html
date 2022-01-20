@@ -8,8 +8,6 @@
 <title>Clicking Bad</title>
 
 <script>
-var has_gaq = false;
-var has_loggly = false;
 
 {% include 'jquery.min.js' %}
 </script>
@@ -20,10 +18,6 @@ var has_loggly = false;
 <script>
 {% include 'base64.js' %}
 </script>
-{% if not isapp %}
-    {% include "google.html" %}
-    {% include "loggly.html" %}
-{% endif %}
 
 <style type="text/css">
 {% include "game.css" %}
@@ -59,7 +53,7 @@ $(document).ready(function() {
         bind_type = 'touchstart click';
     }
 
-    $('#make_btn').bind(bind_type, function(e) { 
+    $('#make_btn').bind(bind_type, function(e) {
         gm.do_make_click();
         {% if not isapp %}
         var elc = $('.make_up:first').clone()
@@ -69,22 +63,22 @@ $(document).ready(function() {
         elc.offset({left:e.pageX-30, top:e.pageY-50});
         var end_y = e.clientY-150;
         elc.css('opacity',100);
-        if(last_float == 1) { 
+        if(last_float == 1) {
             var this_float = e.pageX;
             last_float = 0;
-        } else { 
+        } else {
             var this_float = e.pageX - 60;
-            last_float = 1; 
+            last_float = 1;
         }
-        elc.animate({'top':end_y.toString()+'px', 'opacity':0, 'left':this_float.toString()+'px'}, 750, function() { 
+        elc.animate({'top':end_y.toString()+'px', 'opacity':0, 'left':this_float.toString()+'px'}, 750, function() {
             $(this).remove();
         });
         {% endif %}
     });
 
-    $('#sell_btn').bind(bind_type, function(e) { 
+    $('#sell_btn').bind(bind_type, function(e) {
         var sale = gm.do_sell_click();
-        if(sale == 0) { 
+        if(sale == 0) {
             return;
         }
         {% if not isapp %}
@@ -95,14 +89,14 @@ $(document).ready(function() {
         elc.offset({left:e.pageX-30, top:e.pageY-50});
         var end_y = e.clientY-150;
         elc.css('opacity',100);
-        if(last_float == 1) { 
+        if(last_float == 1) {
             var this_float = e.pageX;
             last_float = 0;
-        } else { 
+        } else {
             var this_float = e.pageX - 60;
-            last_float = 1; 
+            last_float = 1;
         }
-        elc.animate({'top':end_y.toString()+'px', 'opacity':0, 'left':this_float.toString()+'px'}, 750, function() { 
+        elc.animate({'top':end_y.toString()+'px', 'opacity':0, 'left':this_float.toString()+'px'}, 750, function() {
             $(this).remove();
         });
         {% endif %}
@@ -117,8 +111,8 @@ $(document).ready(function() {
 </script>
 
 <div id="left_wrap" class="left_width">
-    <div id="make_sell_spacer"></div>  
-    <div id="left_floatable">     
+    <div id="make_sell_spacer"></div>
+    <div id="left_floatable">
     <div id="make_sell_wrap">
     <div id="make_div">
         <p>
@@ -200,17 +194,17 @@ $(document).ready(function() {
         <div class="w_div">
             <h3>
                 <a href="#" onclick="$('#toggle_finance_info').toggle(100); return false;">
-                Laundering 
+                Laundering
                 </a>
                 <small class="pull_right">$<span id="bank_rps">0</span>/sec</small>
             </h3>
             <div id="toggle_finance_info">
             <p class="small">Total laundered <b>$<span id="bank_total">0</span></b>
                 <br /><br />
-                Laundered cash is the amount of <em>your total cash</em> that is 
+                Laundered cash is the amount of <em>your total cash</em> that is
                 safe from being stolen or
-                seized by the DEA or IRS. The more laundered to 
-                total cash you have, the lower the likelihood that 
+                seized by the DEA or IRS. The more laundered to
+                total cash you have, the lower the likelihood that
                 you'll be audited. Laundered cash is not a separate resource,
                 so it can never be higher than your total cash.
                 
@@ -265,25 +259,25 @@ $(document).ready(function() {
                 <li>Batches hand-sold: <b><span id="hand_sold_widgets">0</span></b></li>
                 <li>Total upgrades purchased: <b><span id="bought_upgrades">0</span></b></li>
                 <li>Total cash earned: <b>$<span id="total_cash">0</span></b></li>
-                <li>Total cash spent: <b>$<span id="total_spent">0</span></b></li> 
+                <li>Total cash spent: <b>$<span id="total_spent">0</span></b></li>
                 <li>Seconds spent playing: <b><span id="time_played">0</span></b></li>
                 <li>Batches made per click: <b><span id="click_make_amount">0</span></b></li>
                 <li>Batches sold per click: <b><span id="click_sell_amount">0</span></b></li>
-            </ul>    
+            </ul>
         </div>
 
         <div class="pull_left space_left">
             <h3>Credits</h3>
             <ul>
-                <li><b>Aaron Meier</b> 
+                <li><b>Aaron Meier</b>
                     - Programming and design</li>
-                <li><b>Cody Stevens</b> 
+                <li><b>Cody Stevens</b>
                     - Name</li>
-                <li><b>Dustin Lee</b> 
+                <li><b>Dustin Lee</b>
                     - Concept</li>
                 <li>
                     <b>
-                        <a href="https://github.com/nullism/clickingbad" target="_blank">GitHub</a> 
+                        <a href="https://github.com/nullism/clickingbad" target="_blank">GitHub</a>
                         Contributors</b> -
                     nullism, Pringley, atomicstack, dakotacody, csssuf, TooDumbForAName, gmmeyer, paac, jwalt333
                 </li>
@@ -298,11 +292,5 @@ $(document).ready(function() {
 <div class="sell_up"></div>
 
 {% include "tpls.html" %}
-
-{% if isapp %}
-    <p class="small light_grey">Version {{version}}</p>
-{% else %}
-    {% include "footer.html" %}
-{% endif %}
 </body>
 </html>
