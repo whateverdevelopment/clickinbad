@@ -837,6 +837,16 @@ function Game() {
                 'prereq':'08_mariachi_band',
                 'sid':'u08',
             },
+            '66_tighty_whities':{
+                'label':'Tighty Whities',
+                'description':'Improves meth purity by 0.5 IPU',
+                'cost':60,
+                'action':'widget_roi',
+                'mod':0.5,
+                'purchased':false,
+                'prereq':null,
+                'sid':'u66',
+            },
             // UPG SELLERS
             '11_dealer_business_cards':{
                 'label':'Dealer Business Cards',

@@ -7,10 +7,6 @@
 * Description: Meth prices at 50% for 10 seconds, meth production low for 10 seconds
 * Implemented: no
 
-# Achievement or Upgrade:
-* Description: Whitey tighties - Earn whitey tighties as an achievement (1st cook?) or Buy Whitey tighties to increase meth quality by 1 IPU.
-* Implemented: no
-
 # Game play:
 * Add an interim tier or lower prices of Meth Star so not as long to achieve. 
 * Implemented: no
