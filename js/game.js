@@ -1,27 +1,3 @@
-/******************************************************************************
-    The MIT License (MIT)
-
-    Copyright (c) 2013, Aaron Meier
-
-    Permission is hereby granted, free of charge, to any person obtaining a copy
-    of this software and associated documentation files (the "Software"), to deal
-    in the Software without restriction, including without limitation the rights
-    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-    copies of the Software, and to permit persons to whom the Software is
-    furnished to do so, subject to the following conditions:
-
-    The above copyright notice and this permission notice shall be included in
-    all copies or substantial portions of the Software.
-
-    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-    THE SOFTWARE.
- ******************************************************************************/
-
 var active_tab = '';
 var tmr = null;
 var sec_tmr = null;
@@ -35,18 +11,12 @@ var last_saved = 0;
 var last_click = 0;
 var last_bust = 0;
 var last_float = 10;
-{% if isapp %}
-var tick_ms = 250;
-{% else %}
 var tick_ms = 100;
-{% endif %}
-
 
 function Game() {
 
     var pd = {
-        'title':'Clicking Bad',
-        'version':'{{version}}',
+        'title':'ClickinBad',
         'make_amount':1,
         'make_rps_multiplier':0,
         'sell_amount':1,
@@ -2333,7 +2303,6 @@ function Game() {
         //update_save_from_pd();
         new_update_save_from_pd();
         last_saved = 0;
-        track_page_view('/game_save');
     }
 
     this.do_load = function() {
@@ -2341,19 +2310,24 @@ function Game() {
             //update_pd_from_save();
             new_update_pd_from_save();
             message('Game loaded!');
-            track_page_view('/game_load');
         }
     }
 
-    this.do_export = function() {
+    this.do_export = function(dwnld = false) {
         var exdata = {
             'sv': new_pd_to_json(),
             'ac': new_ac_to_json()
         };
         var exdata_json = JSON.stringify(exdata);
         var exdata_base64 = Base64.encode(exdata_json);
-        $('#impexp').val(exdata_base64);
-        message('Game exported!');
+        if(dwnld == false) {
+          $('#impexp').val(exdata_base64);
+          message('Game exported!');
+        } else {
+          dwnld.setAttribute("href", "data:text/plain,"+exdata_base64);
+          dwnld.setAttribute("download", "cb-export.txt");
+          message('Game downloaded!');
+        }
     }
 
     this.do_import = function() {
@@ -2371,13 +2345,11 @@ function Game() {
     this.do_reset = function() {
         localStorage.removeItem("sv2");
         message('Game reset');
-        track_page_view('/game_reset');
         location.reload();
     }
     this.do_reset_all = function() {
         localStorage.clear();
         message('Game reset - all');
-        track_page_view('/game_reset_all');
         location.reload();
     }
 
@@ -2403,13 +2375,11 @@ function Game() {
     }
 
     this.do_make_click = function() {
-        {% if not isapp %}
         var nw = (new Date).getTime();
         if((nw - last_click) < 70) {
             return false;
         }
         last_click = nw;
-        {% endif %}
         var amt = this.get_click_make_amount();
         if(do_make(amt)) {
             //message('You made '+pretty_int(pd.make_amount)+' '+pd.widgets.label);
@@ -2436,13 +2406,11 @@ function Game() {
     }
 
     this.do_sell_click = function() {
-        {% if not isapp %}
         var nw = (new Date).getTime();
         if((nw - last_click) < 70) {
             return false;
         }
         last_click = nw;
-        {% endif %}
         var sale = do_sell(this.get_click_sell_amount());
         if(sale) {
             //message('You sold '+pretty_int(sale)+' '+pd.widgets.label);
@@ -2480,7 +2448,6 @@ function Game() {
         }
         bn.amount += 1;
         message('You have purchased a '+bn.label+' for $'+pretty_bigint(bn.cost));
-        //track_page_view('/game_buy_bank');
         return true;
     }
 
@@ -2492,7 +2459,6 @@ function Game() {
         var sell_val = get_item_sell_value(bn);
         earn_cash(sell_val);
         message('You sold a '+bn.label+' for $'+pretty_bigint(sell_val));
-        //track_page_view('/game_sell_bank');
         bn.amount -= 1;
         return true;
     }
@@ -2505,7 +2471,6 @@ function Game() {
         cl.amount += 1;
         message('You have purchased a '+cl.label+' for $'+pretty_bigint(cl.cost));
         fix_clickers();
-        //track_page_view('/game_buy_clicker');
         return true;
     }
 
@@ -2517,7 +2482,6 @@ function Game() {
         var sell_val = get_item_sell_value(cl);
         earn_cash(sell_val);
         message('You sold a '+cl.label+' for $'+pretty_bigint(sell_val));
-        //track_page_view('/game_sell_clicker');
         cl.amount -= 1;
         return true;
     }
@@ -2530,7 +2494,6 @@ function Game() {
         sl.amount += 1;
         message('You have purchased a '+sl.label+' for $'+pretty_bigint(sl.cost));
         fix_sellers();
-        //track_page_view('/game_buy_seller');
         return true;
     }
 
@@ -2542,7 +2505,6 @@ function Game() {
         var sell_val = get_item_sell_value(sl);
         earn_cash(sell_val);
         message('You sold a '+sl.label+' for $'+pretty_bigint(sell_val));
-        //track_page_view('/game_sell_seller');
         sl.amount -= 1;
         return true;
     }
@@ -2557,7 +2519,6 @@ function Game() {
             return false;
         }
         message('You have unlocked '+upg.label+' for $'+pretty_bigint(upg.cost));
-        track_page_view('/game_buy_upgrade');
         fix_upgrades();
     }
 
@@ -2864,8 +2825,8 @@ function Game() {
             }
             ac_tot += 1;
         }
-        $('#achievements_unlocked').html(pretty_int(ac_unl));
-        $('#achievements_total').html(pretty_int(ac_tot));
+        $('.achievements_unlocked').html(pretty_int(ac_unl));
+        $('.achievements_total').html(pretty_int(ac_tot));
 
     }
 
@@ -2909,8 +2870,8 @@ function Game() {
             }
             el.removeClass('hidden');
         }
-        $('#upgrades_unlocked').html(pretty_int(up_unl));
-        $('#upgrades_total').html(pretty_int(up_tot));
+        $('.upgrades_unlocked').html(pretty_int(up_unl));
+        $('.upgrades_total').html(pretty_int(up_tot));
     }
 
 
@@ -2922,18 +2883,21 @@ function Game() {
                 pd.stats.bought_upgrades += 1;
             }
         }
-        
-        if(active_tab != 'misc') { return; }
-        $('#hand_made_widgets').html(pretty_bigint(pd.stats.hand_made_widgets));
-        $('#made_widgets').html(pretty_bigint(pd.stats.made_widgets));
-        $('#sold_widgets').html(pretty_bigint(pd.stats.sold_widgets));
-        $('#hand_sold_widgets').html(pretty_bigint(pd.stats.hand_sold_widgets));
-        $('#total_cash').html(pretty_bigint(pd.stats.total_cash));
-        $('#total_spent').html(pretty_bigint(pd.stats.total_spent));
-        $('#bought_upgrades').html(pretty_int(pd.stats.bought_upgrades));
-        $('#time_played').html(pretty_int(pd.stats.seconds_played));
-        $('#click_sell_amount').html(pretty_int(pd.sell_amount));
-        $('#click_make_amount').html(pretty_int(pd.make_amount));
+
+        if(active_tab == 'misc') {
+          $('#hand_made_widgets').html(pretty_bigint(pd.stats.hand_made_widgets));
+          $('#made_widgets').html(pretty_bigint(pd.stats.made_widgets));
+          $('#sold_widgets').html(pretty_bigint(pd.stats.sold_widgets));
+          $('#hand_sold_widgets').html(pretty_bigint(pd.stats.hand_sold_widgets));
+          $('#total_cash').html(pretty_bigint(pd.stats.total_cash));
+          $('#total_spent').html(pretty_bigint(pd.stats.total_spent));
+          $('#bought_upgrades').html(pretty_int(pd.stats.bought_upgrades));
+          $('#time_played').html(pretty_int(pd.stats.seconds_played));
+        }
+        if(active_tab == 'misc' || active_tab == 'upgrades') {
+          $('.click_sell_amount').html(pretty_int(pd.sell_amount));
+          $('.click_make_amount').html(pretty_int(pd.make_amount));
+        }
     }
 
     /******************************************************************************
@@ -3333,8 +3297,7 @@ function pretty_int(num) {
     return num_str;
 }
 
-// Analytics
-
+// Log
 function log(type, msg, data) {
     var obj = null;
     if(data) { obj = data; }
