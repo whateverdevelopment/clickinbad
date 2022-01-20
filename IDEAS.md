@@ -1,6 +1,5 @@
-
 # Upgrade: Lab Assistant
-* Description: Make twice as much meth with your new lab assistant. 
+* Description: Make twice as much meth with your new lab assistant.
 * Implemented: no
 
 # Event: Too high inventory
@@ -8,19 +7,15 @@
 * Implemented: no
 
 # Game play:
-* Add an interim tier or lower prices of Meth Star so not as long to achieve. 
-* Implemented: no
-
-# Game saves:
-* Add ability to save game/load game from file.  Many people stop playing after losing data. 
+* Add an interim tier or lower prices of Meth Star so not as long to achieve.
 * Implemented: no
 
 # MOAR tiers:
 * Description: Keep people playing
 * Implemented: no
 
-# Achievement: Master of Disguise 
-* Description: -101% chance of DEA raid 
+# Achievement: Master of Disguise
+* Description: -101% chance of DEA raid
 * Implemented: no
 
 # Achievement: Kim Dotcom
@@ -31,15 +26,7 @@
 * Description: Lose 10,000,000
 * Implemented: No
 
-# Achievement: Kardashian
-* Description: You spent your first million
-* Implemented: Yes
-
-# Achievement: Addict
-* Description: You have played over X seconds
-* Implemented: Yes
-
-# Achievement: 
+# Achievement:
 * Description: You have lost $ to the DEA 10 times
 * Implemented: No
 
