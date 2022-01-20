@@ -50,15 +50,3 @@
 # Space DEA/IRS:
 * Description: They keep coming after you and mess up your 0% risk.
 * Implemented: No
-
-# Manufacturing tier: Underwater lab
-* Description:  Just like it sounds
-* Implemented: No
-
-# Manufacturing tier: Underwater city
-* Description: Methlantis
-* Implemented: No
-
-
-
-
