@@ -7,18 +7,6 @@
 
 <title>Clicking Bad</title>
 
-<script>
-
-{% include 'jquery.min.js' %}
-</script>
-<script>
-{% include 'mustache.js' %}
-</script>
-
-<script>
-{% include 'base64.js' %}
-</script>
-
 <style type="text/css">
 {% include "game.css" %}
 </style>
@@ -26,89 +14,6 @@
 </head>
 
 <body>
-
-<script>
-
-// Include the main game stuff
-{% include 'game.js' %}
-
-// SETUP
-var gm = new Game();
-$(document).ready(function() {
-    gm.setup_display();
-    tmr = setInterval("gm.tick()", tick_ms);
-    sec_tmr = setInterval("gm.sec_tick()", 1000);
-    save_tmr = setInterval("gm.do_save()", 30000);
-    event_tmr = setInterval("gm.check_events()", 120000);
-    ver_tmr = setInterval("gm.check_version()", 620000);
-    gm.do_load();
-    message('Welcome to '+gm.get_title()+', bitch.');
-
-
-    // Events
-    var bind_type = 'click';
-    if ('ontouchstart' in window) {
-        bind_type = 'touchstart click';
-    } else if(window.navigator.msPointerEnabled) {
-        bind_type = 'touchstart click';
-    }
-
-    $('#make_btn').bind(bind_type, function(e) {
-        gm.do_make_click();
-        {% if not isapp %}
-        var elc = $('.make_up:first').clone()
-        elc.html('+'+pretty_bigint(gm.get_click_make_amount()));
-        $('#make_div').append(elc);
-        elc.show();
-        elc.offset({left:e.pageX-30, top:e.pageY-50});
-        var end_y = e.clientY-150;
-        elc.css('opacity',100);
-        if(last_float == 1) {
-            var this_float = e.pageX;
-            last_float = 0;
-        } else {
-            var this_float = e.pageX - 60;
-            last_float = 1;
-        }
-        elc.animate({'top':end_y.toString()+'px', 'opacity':0, 'left':this_float.toString()+'px'}, 750, function() {
-            $(this).remove();
-        });
-        {% endif %}
-    });
-
-    $('#sell_btn').bind(bind_type, function(e) {
-        var sale = gm.do_sell_click();
-        if(sale == 0) {
-            return;
-        }
-        {% if not isapp %}
-        var elc = $('.sell_up:first').clone()
-        elc.html('$'+pretty_bigint(sale*gm.get_widget_roi()));
-        $('#sell_div').append(elc);
-        elc.show();
-        elc.offset({left:e.pageX-30, top:e.pageY-50});
-        var end_y = e.clientY-150;
-        elc.css('opacity',100);
-        if(last_float == 1) {
-            var this_float = e.pageX;
-            last_float = 0;
-        } else {
-            var this_float = e.pageX - 60;
-            last_float = 1;
-        }
-        elc.animate({'top':end_y.toString()+'px', 'opacity':0, 'left':this_float.toString()+'px'}, 750, function() {
-            $(this).remove();
-        });
-        {% endif %}
-    });
-
-    // End actions
-    switch_tab('clickers');
-    $('button').attr('disabled', false);
-});
-
-
-</script>
 
 <div id="left_wrap" class="left_width">
     <div id="make_sell_spacer"></div>
@@ -291,6 +196,88 @@ $(document).ready(function() {
 <div class="make_up"></div>
 <div class="sell_up"></div>
 
-{% include "tpls.html" %}
+<!-- Scripts -->
+<script src="plugins/jquery/jquery.min.js"></script>
+<script src="plugins/mustache/mustache.min.js"></script>
+<script src="plugins/base64/base64.js"></script>
+<script src="js/game.js"></script>
+<script src="js/init.js"></script>
+
+<!-- Templates -->
+<script id="tpl_achievement" type="text/template">
+  <div id="{{id}}" class="s_div">
+    <h3 id="{{id}}_lbl">
+      {{ac.label}}
+    </h3>
+    <p class="small">
+      {{ac.description}}
+    </p>
+  </div>
+</script>
+
+<script id="tpl_bank" type="text/template">
+  <div id="{{id}}" class="s_div">
+    <h3 id="{{id}}_lbl">{{bn.label}}
+      <label id="{{id}}_amt" class="grey pull_right">{{bn.amount}}</label>
+    </h3>
+    <p class="small">
+      <strong>$<span id="{{id}}_cst">{{bn.cost}}</span></strong> &mdash;
+      <em class="grey">{{bn.description}}</em>
+    </p>
+    <p class="pull_right small">
+      Launders <strong>$<span id="{{id}}_rps">{{bn.rps}}</span></strong> per second
+    </p>
+    <button id="{{id}}_btn" onclick="gm.buy_bank('{{id}}')">Buy</button>
+    <button id="{{id}}_sell_btn" onclick="gm.sell_bank('{{id}}')">Sell</button>
+    <p class="clear"></p>
+  </div>
+</script>
+
+<script id="tpl_clicker" type="text/template">
+  <div id="{{id}}" class="s_div">
+    <h3 id="{{id}}_lbl">{{cl.label}}
+      <label id="{{id}}_amt" class="grey pull_right">{{cl.amount}}</label>
+    </h3>
+    <p class="small">
+      <strong>$<span id="{{id}}_cst">{{cl.cost}}</span></strong> &mdash;
+      <em class="grey">{{cl.description}}</em>
+    </p>
+    <p class="pull_right small">
+      Cooks <strong><span id="{{id}}_rps">{{cl.rps}}</span></strong> per second;
+      <strong><span id="{{id}}_rsk">{{cl.risk}}</span>%</strong> risk
+    </p>
+    <button id="{{id}}_btn" onclick="gm.buy_clicker('{{id}}')">Purchase</button>
+    <button id="{{id}}_sell_btn" onclick="gm.sell_clicker('{{id}}')">Sell</button>
+  </div>
+</script>
+
+<script id="tpl_seller" type="text/template">
+  <div id="{{id}}" class="s_div">
+    <h3 id="{{id}}_lbl">{{sl.label}}
+      <label id="{{id}}_amt" class="grey pull_right">{{sl.amount}}</label>
+    </h3>
+    <p class="small">
+      <strong>$<span id="{{id}}_cst">{{sl.cost}}</span></strong> &mdash;
+      <em class="grey">{{sl.description}}</em>
+    </p>
+    <p class="pull_right small">
+      Sells <strong><span id="{{id}}_rps">{{sl.rps}}</span></strong> per second;
+      <strong><span id="{{id}}_rsk">{{sl.risk}}</span>%</strong> risk
+    </p>
+    <button id="{{id}}_btn" onclick="gm.buy_seller('{{id}}')">Purchase</button>
+    <button id="{{id}}_sell_btn" onclick="gm.sell_seller('{{id}}')">Sell</button>
+  </div>
+</script>
+
+<script id="tpl_upgrade" type="text/template">
+  <div id="{{id}}" class="s_div">
+    <h3 id="{{id}}_lbl">
+      {{upg.label}}
+      <span id="{{id}}_cst" class="grey pull_right">${{upg.cost}}</span>
+    </h3>
+    <p class="small grey"><em>{{upg.description}}</em></p>
+    <button id="{{id}}_btn" onclick="gm.buy_upgrade('{{id}}')">Purchase</button>
+  </div>
+</script>
 </body>
 </html>
