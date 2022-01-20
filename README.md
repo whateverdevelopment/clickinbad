@@ -1,64 +1,20 @@
-Clicking Bad
-============
+# ClickinBad
+Welcome to ClickinBad, Heisenberg.
 
-Official Clicking Bad Repository
+Click your life away to create the most successful meth empire in the universe. ClickinBad is a fork of the 'Clicking Bad' project - aiming to preserve the game, improve its availability, and update some dated components. The android app was abandoned in favor of making this a web-only project. Game backups can be imported without issue.
 
-About
-=====
+[clickinbad.whateverdev.com](https://clickinbad.whateverdev.com/)
 
-System Requirements
--------------------
+## Credits
+**Nullism's Clicking Bad**
++ Author: [Nullism](https://github.com/nullism)
++ Source: [GitHub](https://github.com/nullism/clickingbad)
++ Contributors:
+  + [Pringley](https://github.com/Pringley)
+  + [atomicstack](https://github.com/atomicstack)
+  + [csssuf](https://github.com/csssuf)
 
-### Supported browsers
+## License
+This project is distributed on GitLab under the MIT License.
 
-* IE9 & 10
-* FF20-24
-* Chrome (all recent)
-* Android
-
-Contributing
-============
-
-Code
-----
-
-### Style
-
-* 4 spaces indent, no tabs
-* Comments should appear on their own line or lines
-    * This is due to the comment-stripper regex
-* No Windows carriage returns (`\r\n`)
-    * `dos2unix` can be run on these, but we'd prefer not to.
-* No "special" characters in code, use standard ASCII where possible.
-
-#### Sample .vimrc
-
-    set shiftwidth=4
-    set tabstop=4
-    set expandtab
-
-Look and Feel
--------------
-
-There are a few things that should be kept in mind:
-
-1. **Responsive design.** One CSS file should allow `index.html` to look good on mobile phones, too.
-2. **Cross browser.** This means no `div` overflow, since it's not supported by Android. See the [Supported Browsers](#supported-browsers) section for more information.
-3. **Valid.** Try to keep the HTML5 as valid as possible. 
-
-Testing
--------
-
-### Caching
-
-The following command will cache templates to `./docroot`.   
-
-    $ ./control.py cache
-    ...
-
-### Testing
-
-    $ cd ./docroot
-    $ python -m SimpleHTTPServer 5000
-
- 
+[LICENSE](https://gitlab.com/whateverdev/games/clickinbad/-/blob/main/LICENSE)
